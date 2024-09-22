@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="NOTE_assets.png">
+	<!-- Created with Adobe Animate version 20.5.1.31044 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="arrow0000" x="2" y="2" width="154" height="157"/>
+	<SubTexture name="confirm0000" x="158" y="2" width="218" height="221" frameX="-3" frameY="-4" frameWidth="225" frameHeight="228"/>
+	<SubTexture name="confirm0001" x="378" y="2" width="218" height="221" frameX="-3" frameY="-4" frameWidth="225" frameHeight="228"/>
+	<SubTexture name="confirm0002" x="598" y="2" width="225" height="228"/>
+	<SubTexture name="confirm0003" x="598" y="2" width="225" height="228"/>
+	<SubTexture name="press0000" x="825" y="2" width="140" height="142" frameX="-3" frameY="-3" frameWidth="146" frameHeight="149"/>
+	<SubTexture name="press0001" x="825" y="2" width="140" height="142" frameX="-3" frameY="-3" frameWidth="146" frameHeight="149"/>
+	<SubTexture name="press0002" x="2" y="232" width="146" height="149"/>
+	<SubTexture name="press0003" x="2" y="232" width="146" height="149"/>
+	<SubTexture name="note0000" x="150" y="232" width="154" height="157"/>
+	<SubTexture name="hold end0000" x="306" y="232" width="50" height="64"/>
+	<SubTexture name="hold piece0000" x="358" y="232" width="50" height="44"/>
+</TextureAtlas>
