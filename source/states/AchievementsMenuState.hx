@@ -59,7 +59,6 @@ class AchievementsMenuState extends MusicBeatState
 			var graphic = null;
 			if(option.unlocked)
 			{
-				#if MODS_ALLOWED Mods.currentModDirectory = option.mod; #end
 				var image:String = 'achievements/' + option.name;
 				if(Paths.fileExists('images/$image-pixel.png', IMAGE))
 				{
@@ -80,7 +79,6 @@ class AchievementsMenuState extends MusicBeatState
 			spr.antialiasing = hasAntialias;
 			grpOptions.add(spr);
 		}
-		#if MODS_ALLOWED Mods.loadTopMod(); #end
 
 		var box:FlxSprite = new FlxSprite(0, -30).makeGraphic(1, 1, FlxColor.BLACK);
 		box.scale.set(grpOptions.width + 60, grpOptions.height + 60);

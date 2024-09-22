@@ -439,7 +439,7 @@ class ChartingState extends MusicBeatState
 			var songName:String = Paths.formatToSongPath(_song.song);
 			var file:String = Paths.json(songName + '/events');
 			#if sys
-			if (#if MODS_ALLOWED FileSystem.exists(Paths.modsJson(songName + '/events')) || #end FileSystem.exists(file))
+			if (FileSystem.exists(file))
 			#else
 			if (OpenFlAssets.exists(file))
 			#end
@@ -484,39 +484,15 @@ class ChartingState extends MusicBeatState
 		stepperSpeed.value = _song.speed;
 		stepperSpeed.name = 'song_speed';
 		blockPressWhileTypingOnStepper.push(stepperSpeed);
-		#if MODS_ALLOWED
-		var directories:Array<String> = [Paths.mods('characters/'), Paths.mods(Mods.currentModDirectory + '/characters/'), Paths.getSharedPath('characters/')];
-		for(mod in Mods.getGlobalMods())
-			directories.push(Paths.mods(mod + '/characters/'));
-		#else
 		var directories:Array<String> = [Paths.getSharedPath('characters/')];
-		#end
 
 		var tempArray:Array<String> = [];
-		var characters:Array<String> = [];
+		var characters:Array<String> = Mods.mergeAllTextsNamed('data/characterList.txt', Paths.getSharedPath());
 		for (character in characters)
 		{
 			if(character.trim().length > 0)
 				tempArray.push(character);
 		}
-
-		#if MODS_ALLOWED
-		for (i in 0...directories.length) {
-			var directory:String = directories[i];
-			if(FileSystem.exists(directory)) {
-				for (file in FileSystem.readDirectory(directory)) {
-					var path = haxe.io.Path.join([directory, file]);
-					if (file.endsWith('.json') || file.endsWith('.xml')) {
-						var charToCheck:String = file.substr(0, file.length - 5);
-						if(charToCheck.trim().length > 0 && !charToCheck.endsWith('-dead') && !tempArray.contains(charToCheck)) {
-							tempArray.push(charToCheck);
-							characters.push(charToCheck);
-						}
-					}
-				}
-			}
-		}
-		#end
 		tempArray = [];
 
 		var player1DropDown = new FlxUIDropDownMenu(10, stepperSpeed.y + 45, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
@@ -546,15 +522,9 @@ class ChartingState extends MusicBeatState
 		player2DropDown.selectedLabel = _song.player2;
 		blockPressWhileScrolling.push(player2DropDown);
 
-		#if MODS_ALLOWED
-		var directories:Array<String> = [Paths.mods('stages/'), Paths.mods(Mods.currentModDirectory + '/stages/'), Paths.getSharedPath('stages/')];
-		for(mod in Mods.getGlobalMods())
-			directories.push(Paths.mods(mod + '/stages/'));
-		#else
 		var directories:Array<String> = [Paths.getSharedPath('stages/')];
-		#end
 
-		var stageFile:Array<String> = [];
+		var stageFile:Array<String> = Mods.mergeAllTextsNamed('data/stageList.txt', Paths.getSharedPath());
 		var stages:Array<String> = [];
 		for (stage in stageFile) {
 			if(stage.trim().length > 0) {
@@ -562,23 +532,6 @@ class ChartingState extends MusicBeatState
 			}
 			tempArray.push(stage);
 		}
-		#if MODS_ALLOWED
-		for (i in 0...directories.length) {
-			var directory:String = directories[i];
-			if(FileSystem.exists(directory)) {
-				for (file in FileSystem.readDirectory(directory)) {
-					var path = haxe.io.Path.join([directory, file]);
-					if (!FileSystem.isDirectory(path) && file.endsWith('.json')) {
-						var stageToCheck:String = file.substr(0, file.length - 5);
-						if(stageToCheck.trim().length > 0 && !tempArray.contains(stageToCheck)) {
-							tempArray.push(stageToCheck);
-							stages.push(stageToCheck);
-						}
-					}
-				}
-			}
-		}
-		#end
 
 		if(stages.length < 1) stages.push('stage');
 
@@ -973,13 +926,6 @@ class ChartingState extends MusicBeatState
 		#if LUA_ALLOWED
 		var eventPushedMap:Map<String, Bool> = new Map<String, Bool>();
 		var directories:Array<String> = [];
-
-		#if MODS_ALLOWED
-		directories.push(Paths.mods('custom_events/'));
-		directories.push(Paths.mods(Mods.currentModDirectory + '/custom_events/'));
-		for(mod in Mods.getGlobalMods())
-			directories.push(Paths.mods(mod + '/custom_events/'));
-		#end
 
 		for (i in 0...directories.length) {
 			var directory:String =  directories[i];
@@ -2654,27 +2600,14 @@ class ChartingState extends MusicBeatState
 	function loadCharacterFile(char:String):CharacterFile {
 		characterFailed = false;
 		var characterPath:String = 'characters/' + char + '.json';
-		#if MODS_ALLOWED
-		var path:String = Paths.modFolders(characterPath);
-		if (!FileSystem.exists(path)) {
-			path = Paths.getSharedPath(characterPath);
-		}
-
-		if (!FileSystem.exists(path))
-		#else
 		var path:String = Paths.getSharedPath(characterPath);
 		if (!OpenFlAssets.exists(path))
-		#end
 		{
 			path = Paths.getSharedPath('characters/' + Character.DEFAULT_CHARACTER + '.json'); //If a character couldn't be found, change him to BF just to prevent a crash
 			characterFailed = true;
 		}
 
-		#if MODS_ALLOWED
-		var rawJson = File.getContent(path);
-		#else
 		var rawJson = OpenFlAssets.getText(path);
-		#end
 		return cast Json.parse(rawJson);
 	}
 

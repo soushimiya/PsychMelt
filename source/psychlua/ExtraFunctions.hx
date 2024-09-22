@@ -144,35 +144,16 @@ class ExtraFunctions
 
 		// File management
 		Lua_helper.add_callback(lua, "checkFileExists", function(filename:String, ?absolute:Bool = false) {
-			#if MODS_ALLOWED
-			if(absolute)
-			{
-				return FileSystem.exists(filename);
-			}
-
-			var path:String = Paths.modFolders(filename);
-			if(FileSystem.exists(path))
-			{
-				return true;
-			}
-			return FileSystem.exists(Paths.getPath('assets/$filename', TEXT));
-			#else
 			if(absolute)
 			{
 				return Assets.exists(filename);
 			}
 			return Assets.exists(Paths.getPath('assets/$filename', TEXT));
-			#end
 		});
 		Lua_helper.add_callback(lua, "saveFile", function(path:String, content:String, ?absolute:Bool = false)
 		{
 			try {
-				#if MODS_ALLOWED
-				if(!absolute)
-					File.saveContent(Paths.mods(path), content);
-				else
-				#end
-					File.saveContent(path, content);
+				File.saveContent(path, content);
 
 				return true;
 			} catch (e:Dynamic) {
@@ -183,18 +164,6 @@ class ExtraFunctions
 		Lua_helper.add_callback(lua, "deleteFile", function(path:String, ?ignoreModFolders:Bool = false)
 		{
 			try {
-				#if MODS_ALLOWED
-				if(!ignoreModFolders)
-				{
-					var lePath:String = Paths.modFolders(path);
-					if(FileSystem.exists(lePath))
-					{
-						FileSystem.deleteFile(lePath);
-						return true;
-					}
-				}
-				#end
-
 				var lePath:String = Paths.getPath(path, TEXT);
 				if(Assets.exists(lePath))
 				{

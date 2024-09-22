@@ -71,10 +71,6 @@ class FunkinLua {
 		game.luaArray.push(this);
 
 		var myFolder:Array<String> = this.scriptName.split('/');
-		#if MODS_ALLOWED
-		if(myFolder[0] + '/' == Paths.mods() && (Mods.currentModDirectory == myFolder[1] || Mods.getGlobalMods().contains(myFolder[1]))) //is inside mods folder
-			this.modFolder = myFolder[1];
-		#end
 
 		// Lua shit
 		set('Function_StopLua', LuaUtils.Function_StopLua);
@@ -1305,19 +1301,11 @@ class FunkinLua {
 		});
 		Lua_helper.add_callback(lua, "startDialogue", function(dialogueFile:String, music:String = null) {
 			var path:String;
-			#if MODS_ALLOWED
-			path = Paths.modsJson(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
-			if(!FileSystem.exists(path))
-			#end
-				path = Paths.json(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
+			path = Paths.json(Paths.formatToSongPath(PlayState.SONG.song) + '/' + dialogueFile);
 
 			luaTrace('startDialogue: Trying to load dialogue: ' + path);
 
-			#if MODS_ALLOWED
-			if(FileSystem.exists(path))
-			#else
 			if(Assets.exists(path))
-			#end
 			{
 				var shit:DialogueFile = DialogueBoxPsych.parseDialogue(path);
 				if(shit.dialogue.length > 0) {
@@ -1473,23 +1461,6 @@ class FunkinLua {
 			}
 		});
 		#end
-
-		// mod settings
-		#if MODS_ALLOWED
-		addLocalCallback("getModSetting", function(saveTag:String, ?modName:String = null) {
-			if(modName == null)
-			{
-				if(this.modFolder == null)
-				{
-					FunkinLua.luaTrace('getModSetting: Argument #2 is null and script is not inside a packed Mod folder!', false, false, FlxColor.RED);
-					return null;
-				}
-				modName = this.modFolder;
-			}
-			return LuaUtils.getModSetting(saveTag, modName);
-		});
-		#end
-		//
 
 		Lua_helper.add_callback(lua, "debugPrint", function(text:Dynamic = '', color:String = 'WHITE') PlayState.instance.addTextToDebug(text, CoolUtil.colorFromString(color)));
 
@@ -1656,17 +1627,7 @@ class FunkinLua {
 	{
 		if(!scriptFile.endsWith(ext)) scriptFile += ext;
 		var preloadPath:String = Paths.getSharedPath(scriptFile);
-		#if MODS_ALLOWED
-		var path:String = Paths.modFolders(scriptFile);
-		if(FileSystem.exists(scriptFile))
-			return scriptFile;
-		else if(FileSystem.exists(path))
-			return path;
-
-		if(FileSystem.exists(preloadPath))
-		#else
 		if(Assets.exists(preloadPath))
-		#end
 		{
 			return preloadPath;
 		}
@@ -1697,61 +1658,10 @@ class FunkinLua {
 		Lua_helper.add_callback(lua, name, null); //just so that it gets called
 	}
 
-	#if (MODS_ALLOWED && !flash && sys)
-	public var runtimeShaders:Map<String, Array<String>> = new Map<String, Array<String>>();
-	#end
-
 	public function initLuaShader(name:String, ?glslVersion:Int = 120)
 	{
 		if(!ClientPrefs.data.shaders) return false;
-
-		#if (MODS_ALLOWED && !flash && sys)
-		if(runtimeShaders.exists(name))
-		{
-			luaTrace('Shader $name was already initialized!');
-			return true;
-		}
-
-		var foldersToCheck:Array<String> = [Paths.mods('shaders/')];
-		if(Mods.currentModDirectory != null && Mods.currentModDirectory.length > 0)
-			foldersToCheck.insert(0, Paths.mods(Mods.currentModDirectory + '/shaders/'));
-
-		for(mod in Mods.getGlobalMods())
-			foldersToCheck.insert(0, Paths.mods(mod + '/shaders/'));
-
-		for (folder in foldersToCheck)
-		{
-			if(FileSystem.exists(folder))
-			{
-				var frag:String = folder + name + '.frag';
-				var vert:String = folder + name + '.vert';
-				var found:Bool = false;
-				if(FileSystem.exists(frag))
-				{
-					frag = File.getContent(frag);
-					found = true;
-				}
-				else frag = null;
-
-				if(FileSystem.exists(vert))
-				{
-					vert = File.getContent(vert);
-					found = true;
-				}
-				else vert = null;
-
-				if(found)
-				{
-					runtimeShaders.set(name, [frag, vert]);
-					//trace('Found shader $name!');
-					return true;
-				}
-			}
-		}
-		luaTrace('Missing shader $name .frag AND .vert files!', false, false, FlxColor.RED);
-		#else
-		luaTrace('This platform doesn\'t support Runtime Shaders!', false, false, FlxColor.RED);
-		#end
+		//No Mods = No Lua Shader.... what the fuck
 		return false;
 	}
 }

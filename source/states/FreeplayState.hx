@@ -400,9 +400,6 @@ class FreeplayState extends MusicBeatState
 			FlxG.sound.music.volume = 0;
 					
 			destroyFreeplayVocals();
-			#if (MODS_ALLOWED && DISCORD_ALLOWED)
-			DiscordClient.loadModRPC();
-			#end
 		}
 		else if(controls.RESET && !player.playingMusic)
 		{

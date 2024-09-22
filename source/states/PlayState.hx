@@ -746,23 +746,8 @@ class PlayState extends MusicBeatState
 		#if LUA_ALLOWED
 		var doPush:Bool = false;
 		var luaFile:String = 'characters/$name.lua';
-		#if MODS_ALLOWED
-		var replacePath:String = Paths.modFolders(luaFile);
-		if(FileSystem.exists(replacePath))
-		{
-			luaFile = replacePath;
-			doPush = true;
-		}
-		else
-		{
-			luaFile = Paths.getSharedPath(luaFile);
-			if(FileSystem.exists(luaFile))
-				doPush = true;
-		}
-		#else
 		luaFile = Paths.getSharedPath(luaFile);
 		if(Assets.exists(luaFile)) doPush = true;
-		#end
 
 		if(doPush)
 		{
@@ -782,20 +767,9 @@ class PlayState extends MusicBeatState
 		#if HSCRIPT_ALLOWED
 		var doPush:Bool = false;
 		var scriptFile:String = 'characters/' + name + '.hx';
-		#if MODS_ALLOWED
-		var replacePath:String = Paths.modFolders(scriptFile);
-		if(FileSystem.exists(replacePath))
-		{
-			scriptFile = replacePath;
+		scriptFile = Paths.getSharedPath(scriptFile);
+		if(FileSystem.exists(scriptFile))
 			doPush = true;
-		}
-		else
-		#end
-		{
-			scriptFile = Paths.getSharedPath(scriptFile);
-			if(FileSystem.exists(scriptFile))
-				doPush = true;
-		}
 
 		if(doPush)
 		{
@@ -1298,11 +1272,7 @@ class PlayState extends MusicBeatState
 		noteData = songData.notes;
 
 		var file:String = Paths.json(songName + '/events');
-		#if MODS_ALLOWED
-		if (FileSystem.exists(Paths.modsJson(songName + '/events')) || FileSystem.exists(file))
-		#else
 		if (OpenFlAssets.exists(file))
-		#end
 		{
 			var eventsData:Array<Dynamic> = Song.loadFromJson('events', songName).events;
 			for (event in eventsData) //Event Notes
@@ -3220,13 +3190,7 @@ class PlayState extends MusicBeatState
 	#if LUA_ALLOWED
 	public function startLuasNamed(luaFile:String)
 	{
-		#if MODS_ALLOWED
-		var luaToLoad:String = Paths.modFolders(luaFile);
-		if(!FileSystem.exists(luaToLoad))
-			luaToLoad = Paths.getSharedPath(luaFile);
-
-		if(FileSystem.exists(luaToLoad))
-		#elseif sys
+		#if sys
 		var luaToLoad:String = Paths.getSharedPath(luaFile);
 		if(OpenFlAssets.exists(luaToLoad))
 		#end
@@ -3244,13 +3208,7 @@ class PlayState extends MusicBeatState
 	#if HSCRIPT_ALLOWED
 	public function startHScriptsNamed(scriptFile:String)
 	{
-		#if MODS_ALLOWED
-		var scriptToLoad:String = Paths.modFolders(scriptFile);
-		if(!FileSystem.exists(scriptToLoad))
-			scriptToLoad = Paths.getSharedPath(scriptFile);
-		#else
 		var scriptToLoad:String = Paths.getSharedPath(scriptFile);
-		#end
 
 		if(FileSystem.exists(scriptToLoad))
 		{
@@ -3555,7 +3513,7 @@ class PlayState extends MusicBeatState
 	{
 		if(!ClientPrefs.data.shaders) return new FlxRuntimeShader();
 
-		#if (!flash && MODS_ALLOWED && sys)
+		#if (!flash && sys)
 		if(!runtimeShaders.exists(name) && !initLuaShader(name))
 		{
 			FlxG.log.warn('Shader $name is missing!');
@@ -3574,7 +3532,7 @@ class PlayState extends MusicBeatState
 	{
 		if(!ClientPrefs.data.shaders) return false;
 
-		#if (MODS_ALLOWED && !flash && sys)
+		#if (!flash && sys)
 		if(runtimeShaders.exists(name))
 		{
 			FlxG.log.warn('Shader $name was already initialized!');
