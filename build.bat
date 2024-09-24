@@ -1,6 +1,6 @@
 @echo off
 color 0a
-cd ..
+cd project
 @echo on
 echo Starting Building...
 haxelib run lime test windows
