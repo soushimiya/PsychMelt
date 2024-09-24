@@ -1256,9 +1256,10 @@ class PlayState extends MusicBeatState
 		FlxG.sound.list.add(vocals);
 		FlxG.sound.list.add(opponentVocals);
 
+		var instrumental = Paths.inst(songData.song, boyfriend.vocalsFile);
 		inst = new FlxSound();
 		try {
-			inst.loadEmbedded(Paths.inst(songData.song));
+			inst.loadEmbedded(instrumental != null ? instrumental : Paths.inst(songData.song));
 		}
 		catch(e:Dynamic) {}
 		FlxG.sound.list.add(inst);

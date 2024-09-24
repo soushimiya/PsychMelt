@@ -67,7 +67,7 @@ class AchievementsMenuState extends MusicBeatState
 				}
 				else graphic = Paths.image(image);
 
-				if(graphic == null) graphic = Paths.image('unknownMod');
+				if(graphic == null) graphic = Paths.image('achievements/unknown');
 			}
 			else graphic = Paths.image('achievements/lockedachievement');
 

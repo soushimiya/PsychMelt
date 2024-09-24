@@ -33,7 +33,7 @@ class AchievementPopup extends openfl.display.Sprite {
 		}
 		else graphic = Paths.image(image, false);
 
-		if(graphic == null) graphic = Paths.image('unknownMod', false);
+		if(graphic == null) graphic = Paths.image('achievements/unknown', false);
 
 		var sizeX = 100;
 		var sizeY = 100;
