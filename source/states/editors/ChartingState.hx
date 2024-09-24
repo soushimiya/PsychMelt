@@ -493,6 +493,23 @@ class ChartingState extends MusicBeatState
 			if(character.trim().length > 0)
 				tempArray.push(character);
 		}
+
+		for (i in 0...directories.length) {
+			var directory:String = directories[i];
+			if(FileSystem.exists(directory)) {
+				for (file in FileSystem.readDirectory(directory)) {
+					var path = haxe.io.Path.join([directory, file]);
+					if (!FileSystem.isDirectory(path) && file.endsWith('.json')) {
+						var charToCheck:String = file.substr(0, file.length - 5);
+						if(charToCheck.trim().length > 0 && !charToCheck.endsWith('-dead') && !tempArray.contains(charToCheck)) {
+							tempArray.push(charToCheck);
+							characters.push(charToCheck);
+						}
+					}
+				}
+			}
+		}
+
 		tempArray = [];
 
 		var player1DropDown = new FlxUIDropDownMenu(10, stepperSpeed.y + 45, FlxUIDropDownMenu.makeStrIdLabelArray(characters, true), function(character:String)
@@ -531,6 +548,22 @@ class ChartingState extends MusicBeatState
 				stages.push(stage);
 			}
 			tempArray.push(stage);
+		}
+
+		for (i in 0...directories.length) {
+			var directory:String = directories[i];
+			if(FileSystem.exists(directory)) {
+				for (file in FileSystem.readDirectory(directory)) {
+					var path = haxe.io.Path.join([directory, file]);
+					if (!FileSystem.isDirectory(path) && file.endsWith('.json')) {
+						var stageToCheck:String = file.substr(0, file.length - 5);
+						if(stageToCheck.trim().length > 0 && !tempArray.contains(stageToCheck)) {
+							tempArray.push(stageToCheck);
+							stages.push(stageToCheck);
+						}
+					}
+				}
+			}
 		}
 
 		if(stages.length < 1) stages.push('stage');

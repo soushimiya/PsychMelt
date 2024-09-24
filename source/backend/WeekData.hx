@@ -99,6 +99,29 @@ class WeekData {
 				}
 			}
 		}
+		for (i in 0...directories.length) {
+			var directory:String = directories[i] + 'weeks/';
+			if(FileSystem.exists(directory)) {
+				var listOfWeeks:Array<String> = CoolUtil.coolTextFile(directory + 'weekList.txt');
+				for (daWeek in listOfWeeks)
+				{
+					var path:String = directory + daWeek + '.json';
+					if(FileSystem.exists(path))
+					{
+						addWeek(daWeek, path, directories[i], i, originalLength);
+					}
+				}
+
+				for (file in FileSystem.readDirectory(directory))
+				{
+					var path = haxe.io.Path.join([directory, file]);
+					if (!FileSystem.isDirectory(path) && file.endsWith('.json'))
+					{
+						addWeek(file.substr(0, file.length - 5), path, directories[i], i, originalLength);
+					}
+				}
+			}
+		}
 	}
 
 	private static function addWeek(weekToCheck:String, path:String, directory:String, i:Int, originalLength:Int)
