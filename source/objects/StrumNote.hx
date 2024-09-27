@@ -181,6 +181,10 @@ class StrumNote extends FlxSprite
 				resetAnim = 0;
 			}
 		}
+		if(animation.curAnim != null){
+			if(animation.curAnim.name == 'confirm' && !PlayState.isPixelStage) 
+				centerOrigin();
+		}
 		updateZIndex();
 		super.update(elapsed);
 	}
@@ -191,6 +195,7 @@ class StrumNote extends FlxSprite
 		{
 			centerOffsets();
 			centerOrigin();
+			updateZIndex();
 		}
 		if(useRGBShader) rgbShader.enabled = (animation.curAnim != null && animation.curAnim.name != 'static');
 	}
