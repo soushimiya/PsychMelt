@@ -6,7 +6,6 @@ import backend.WeekData;
 import backend.Song;
 import backend.Section;
 import backend.Rating;
-import modchart.*;
 
 import flixel.FlxBasic;
 import flixel.FlxObject;
@@ -78,7 +77,6 @@ import tea.SScript;
 **/
 class PlayState extends MusicBeatState
 {
-	public var modManager:ModManager;
 	public static var STRUM_X = 42;
 	public static var STRUM_X_MIDDLESCROLL = -278;
 
@@ -161,7 +159,6 @@ class PlayState extends MusicBeatState
 
 	public var notes:FlxTypedGroup<Note>;
 	public var unspawnNotes:Array<Note> = [];
-	public var notesToSpawn:Array<Array<Note>> = [];
 	public var eventNotes:Array<EventNote> = [];
 
 	public var camFollow:FlxObject;
@@ -511,7 +508,6 @@ class PlayState extends MusicBeatState
 		playerStrums = new FlxTypedGroup<StrumNote>();
 
 		generateSong(SONG.song);
-		modManager = new ModManager(this);
 
 		camFollow = new FlxObject(0, 0, 1, 1);
 		camFollow.setPosition(camPos.x, camPos.y);
@@ -937,9 +933,6 @@ class PlayState extends MusicBeatState
 				//if(ClientPrefs.data.middleScroll) opponentStrums.members[i].visible = false;
 			}
 
-			modManager.receptors = [playerStrums.members, opponentStrums.members];
-			modManager.registerDefaultModifiers();
-
 			startedCountdown = true;
 			Conductor.songPosition = -Conductor.crochet * 5;
 			setOnScripts('startedCountdown', true);
@@ -1290,8 +1283,7 @@ class PlayState extends MusicBeatState
 				for (i in 0...event[1].length)
 					makeEvent(event, i);
 		}
-		for(i in 0...4)
-			notesToSpawn[i] = [];
+
 		for (section in noteData)
 		{
 			for (songNotes in section.sectionNotes)
@@ -1323,11 +1315,6 @@ class PlayState extends MusicBeatState
 				unspawnNotes.push(swagNote);
 
 				final susLength:Float = swagNote.sustainLength / Conductor.stepCrochet;
-
-				if(notesToSpawn[swagNote.noteData]==null)
-					notesToSpawn[swagNote.noteData] = [];
-				notesToSpawn[swagNote.noteData].push(swagNote);
-
 				final floorSus:Int = Math.floor(susLength);
 
 				if(floorSus > 0) {
@@ -1342,7 +1329,6 @@ class PlayState extends MusicBeatState
 						sustainNote.scrollFactor.set();
 						sustainNote.parent = swagNote;
 						unspawnNotes.push(sustainNote);
-						notesToSpawn[swagNote.noteData].push(sustainNote);
 						swagNote.tail.push(sustainNote);
 
 						sustainNote.correctionOffset = swagNote.height / 2;
@@ -1447,16 +1433,6 @@ class PlayState extends MusicBeatState
 				return 280; //Plays 280ms before the actual position
 		}
 		return 0;
-	}
-
-	function sortByOrderNote(wat:Int, Obj1:Note, Obj2:Note):Int
-	{
-		return FlxSort.byValues(FlxSort.ASCENDING, Obj1.zIndex, Obj2.zIndex);
-	}
-
-	function sortByOrderStrumNote(wat:Int, Obj1:StrumNote, Obj2:StrumNote):Int
-	{
-		return FlxSort.byValues(FlxSort.DESCENDING, Obj1.zIndex, Obj2.zIndex);
 	}
 
 	public static function sortByTime(Obj1:Dynamic, Obj2:Dynamic):Int
@@ -1712,10 +1688,8 @@ class PlayState extends MusicBeatState
 			trace("RESET = True");
 		}
 		doDeathCheck();
-		modManager.updateTimeline(curDecStep);
-		modManager.update(elapsed);
 
-		/*if (unspawnNotes[0] != null)
+		if (unspawnNotes[0] != null)
 		{
 			var time:Float = spawnTime * playbackRate;
 			if(songSpeed < 1) time /= songSpeed;
@@ -1733,48 +1707,7 @@ class PlayState extends MusicBeatState
 				var index:Int = unspawnNotes.indexOf(dunceNote);
 				unspawnNotes.splice(index, 1);
 			}
-		}*/
-
-		for(column in notesToSpawn){
-			if(column[0]!=null) {
-				var time:Float = (modManager.getValue("noteSpawnTime", 0) + modManager.getValue("noteSpawnTime", 1)) / 2;
-				if (songSpeed < 1)
-					time /= songSpeed;
-				while (column.length > 0 && column[0].strumTime - Conductor.songPosition < time / ((column[0].multSpeed<1) ? column[0].multSpeed : 1))
-				{
-					var dunceNote:Note = column[0];
-					notes.insert(0, dunceNote);
-					dunceNote.spawned = true;
-					callOnLuas('onSpawnNote', [
-						notes.members.indexOf(dunceNote),
-						dunceNote.noteData,
-						dunceNote.noteType,
-						dunceNote.isSustainNote
-					]);
-					unspawnNotes.splice(unspawnNotes.indexOf(dunceNote), 1);
-					unspawnNotes.splice(column.indexOf(dunceNote), 1);
-				}
-			}
 		}
-
-		opponentStrums.forEachAlive(function(strum:StrumNote)
-		{
-			var pos = modManager.getPos(0, 0, 0, curDecBeat, strum.noteData, 1, strum, [], strum.vec3Cache);
-			modManager.updateObject(curDecBeat, strum, pos, 1);
-			strum.x = pos.x;
-			strum.y = pos.y;
-			strum.z = pos.z;
-		});
-		playerStrums.forEachAlive(function(strum:StrumNote)
-		{
-			var pos = modManager.getPos(0, 0, 0, curDecBeat, strum.noteData, 0, strum, [], strum.vec3Cache);
-			modManager.updateObject(curDecBeat, strum, pos, 0);
-			strum.x = pos.x;
-			strum.y = pos.y;
-			strum.z = pos.z;
-		});
-
-		strumLineNotes.sort(sortByOrderStrumNote);
 
 		if (generatedMusic)
 		{
@@ -1790,42 +1723,14 @@ class PlayState extends MusicBeatState
 					if(startedCountdown)
 					{
 						var fakeCrochet:Float = (60 / SONG.bpm) * 1000;
-						notes.sort(sortByOrderNote);
 						notes.forEachAlive(function(daNote:Note)
 						{
 							var strumGroup:FlxTypedGroup<StrumNote> = playerStrums;
 							if(!daNote.mustPress) strumGroup = opponentStrums;
 
 							var strum:StrumNote = strumGroup.members[daNote.noteData];
-							//daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate);
+							daNote.followStrumNote(strum, fakeCrochet, songSpeed / playbackRate);
 
-							//maybe it not working
-							var pN:Int = daNote.mustPress ? 0 : 1;
-							var pos = modManager.getPos(daNote.strumTime, modManager.getVisPos(Conductor.songPosition, daNote.strumTime, songSpeed), daNote.strumTime - Conductor.songPosition, curDecBeat, daNote.noteData, pN, daNote, [], daNote.vec3Cache);
-							modManager.updateObject(curDecBeat, daNote, pos, pN);
-							pos.x += daNote.offsetX;
-							pos.y += daNote.offsetY;
-							daNote.x = pos.x;
-							daNote.y = pos.y;
-							daNote.z = pos.z;
-							if (daNote.isSustainNote)
-							{
-								var futureSongPos = Conductor.songPosition + 75;
-								var diff = daNote.strumTime - futureSongPos;
-								var vDiff = modManager.getVisPos(futureSongPos, daNote.strumTime, songSpeed);
-								var nextPos = modManager.getPos(daNote.strumTime, vDiff, diff, Conductor.getStep(futureSongPos) / 4, daNote.noteData, pN, daNote, [], daNote.vec3Cache);
-								nextPos.x += daNote.offsetX;
-								nextPos.y += daNote.offsetY;
-								var diffX = (nextPos.x - pos.x);
-								var diffY = (nextPos.y - pos.y);
-								var rad = Math.atan2(diffY, diffX);
-								var deg = rad * (180 / Math.PI);
-								if (deg != 0)
-									daNote.mAngle = (deg + 90);
-								else
-									daNote.mAngle = 0;
-							}
-							
 							if(daNote.mustPress)
 							{
 								if(cpuControlled && !daNote.blockHit && daNote.canBeHit && (daNote.isSustainNote || daNote.strumTime <= Conductor.songPosition))
