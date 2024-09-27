@@ -1324,7 +1324,7 @@ class PlayState extends MusicBeatState
 
 				final susLength:Float = swagNote.sustainLength / Conductor.stepCrochet;
 
-				if (notesToSpawn[swagNote.noteData]==null)
+				if(notesToSpawn[swagNote.noteData]==null)
 					notesToSpawn[swagNote.noteData] = [];
 				notesToSpawn[swagNote.noteData].push(swagNote);
 
@@ -1837,22 +1837,13 @@ class PlayState extends MusicBeatState
 							if(daNote.isSustainNote && strum.sustainReduce) daNote.clipToStrumNote(strum);
 
 							// Kill extremely late notes and cause misses
-							if(daNote.garbage) {
-								daNote.active = daNote.visible = false;
-								invalidateNote(daNote);
-							} else {
-							if (Conductor.songPosition > noteKillOffset + daNote.strumTime && daNote.active)
+							if (Conductor.songPosition - daNote.strumTime > noteKillOffset)
 							{
 								if (daNote.mustPress && !cpuControlled && !daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit))
-								{
 									noteMiss(daNote);
-								}
-								daNote.active = false;
-								daNote.visible = false;
-								daNote.kill();
-								notes.remove(daNote, true);
-								daNote.destroy();
-							}
+
+								daNote.active = daNote.visible = false;
+								invalidateNote(daNote);
 							}
 						});
 					}
