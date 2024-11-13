@@ -5,9 +5,6 @@ import objects.AchievementPopup;
 import haxe.Exception;
 import haxe.Json;
 
-#if LUA_ALLOWED
-import psychlua.FunkinLua;
-#end
 
 typedef Achievement =
 {
@@ -188,57 +185,5 @@ class Achievements {
 		achievements.set(name, data);
 		_sortID++;
 	}
-
-	#if LUA_ALLOWED
-	public static function addLuaCallbacks(lua:State)
-	{
-		Lua_helper.add_callback(lua, "getAchievementScore", function(name:String):Float
-		{
-			if(!achievements.exists(name))
-			{
-				FunkinLua.luaTrace('getAchievementScore: Couldnt find achievement: $name', false, false, FlxColor.RED);
-				return -1;
-			}
-			return getScore(name);
-		});
-		Lua_helper.add_callback(lua, "setAchievementScore", function(name:String, ?value:Float = 1, ?saveIfNotUnlocked:Bool = true):Float
-		{
-			if(!achievements.exists(name))
-			{
-				FunkinLua.luaTrace('setAchievementScore: Couldnt find achievement: $name', false, false, FlxColor.RED);
-				return -1;
-			}
-			return setScore(name, value, saveIfNotUnlocked);
-		});
-		Lua_helper.add_callback(lua, "addAchievementScore", function(name:String, ?value:Float = 1, ?saveIfNotUnlocked:Bool = true):Float
-		{
-			if(!achievements.exists(name))
-			{
-				FunkinLua.luaTrace('addAchievementScore: Couldnt find achievement: $name', false, false, FlxColor.RED);
-				return -1;
-			}
-			return addScore(name, value, saveIfNotUnlocked);
-		});
-		Lua_helper.add_callback(lua, "unlockAchievement", function(name:String):Dynamic
-		{
-			if(!achievements.exists(name))
-			{
-				FunkinLua.luaTrace('unlockAchievement: Couldnt find achievement: $name', false, false, FlxColor.RED);
-				return null;
-			}
-			return unlock(name);
-		});
-		Lua_helper.add_callback(lua, "isAchievementUnlocked", function(name:String):Dynamic
-		{
-			if(!achievements.exists(name))
-			{
-				FunkinLua.luaTrace('isAchievementUnlocked: Couldnt find achievement: $name', false, false, FlxColor.RED);
-				return null;
-			}
-			return isUnlocked(name);
-		});
-		Lua_helper.add_callback(lua, "achievementExists", function(name:String) return achievements.exists(name));
-	}
-	#end
 }
 #end

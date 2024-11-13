@@ -87,8 +87,6 @@ class MasterEditorMenu extends MusicBeatState
 					LoadingState.loadAndSwitchState(new DialogueEditorState(), false);
 				case 'Dialogue Portrait Editor':
 					LoadingState.loadAndSwitchState(new DialogueCharacterEditorState(), false);
-				//case 'Credit Editor':
-				//	MusicBeatState.switchState(new CreditEditorState());
 				case 'Note Splash Debug':
 					MusicBeatState.switchState(new NoteSplashDebugState());
 			}

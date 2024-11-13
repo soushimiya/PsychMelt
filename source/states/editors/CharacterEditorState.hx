@@ -458,7 +458,7 @@ class CharacterEditorState extends MusicBeatState
 			if(intended == null || intended.length < 1) return;
 
 			var characterPath:String = 'characters/$intended.json';
-			var path:String = Paths.getPath(characterPath, TEXT, null, true);
+			var path:String = Paths.getPath(characterPath, TEXT, null);
 			if (Assets.exists(path))
 			{
 				_char = intended;
@@ -640,7 +640,7 @@ class CharacterEditorState extends MusicBeatState
 				updateHealthBar();
 			});
 
-		healthIconInputText = new FlxUIInputText(15, imageInputText.y + 35, 75, healthIcon.getCharacter(), 8);
+		healthIconInputText = new FlxUIInputText(15, imageInputText.y + 35, 75, healthIcon.char, 8);
 
 		vocalsInputText = new FlxUIInputText(15, healthIconInputText.y + 35, 75, character.vocalsFile != null ? character.vocalsFile : '', 8);
 
@@ -714,10 +714,10 @@ class CharacterEditorState extends MusicBeatState
 		if(sender is FlxUIInputText)
 		{
 			if(sender == healthIconInputText) {
-				var lastIcon = healthIcon.getCharacter();
+				var lastIcon = healthIcon.char;
 				healthIcon.changeIcon(healthIconInputText.text, false);
 				character.healthIcon = healthIconInputText.text;
-				if(lastIcon != healthIcon.getCharacter()) updatePresence();
+				if(lastIcon != healthIcon.char) updatePresence();
 			}
 			else if(sender == vocalsInputText)
 				character.vocalsFile = vocalsInputText.text;
@@ -1106,7 +1106,7 @@ class CharacterEditorState extends MusicBeatState
 	inline function updatePresence() {
 		#if DISCORD_ALLOWED
 		// Updating Discord Rich Presence
-		DiscordClient.changePresence("Character Editor", "Character: " + _char, healthIcon.getCharacter());
+		DiscordClient.changePresence("Character Editor", "Character: " + _char, healthIcon.char);
 		#end
 	}
 
@@ -1200,8 +1200,8 @@ class CharacterEditorState extends MusicBeatState
 
 	var characterList:Array<String> = [];
 	function reloadCharacterDropDown() {
-		characterList = Mods.mergeAllTextsNamed('data/characterList.txt', Paths.getSharedPath());
-		var foldersToCheck:Array<String> = Mods.directoriesWithFile(Paths.getSharedPath(), 'characters/');
+		characterList = Paths.mergeAllTextsNamed('data/characterList.txt', Paths.getSharedPath());
+		var foldersToCheck:Array<String> = Paths.directoriesWithFile(Paths.getSharedPath(), 'characters/');
 		for (folder in foldersToCheck)
 			for (file in FileSystem.readDirectory(folder))
 				if(file.toLowerCase().endsWith('.json'))

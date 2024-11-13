@@ -90,7 +90,7 @@ class Paths
 		currentLevel = name.toLowerCase();
 	}
 
-	public static function getPath(file:String, ?type:AssetType = TEXT, ?library:Null<String> = null, ?modsAllowed:Bool = false):String
+	public static function getPath(file:String, ?type:AssetType = TEXT, ?library:Null<String> = null):String
 	{
 
 		if (library != null)
@@ -149,10 +149,6 @@ class Paths
 	{
 		return getPath('shaders/$key.vert', TEXT, library);
 	}
-	inline static public function lua(key:String, ?library:String)
-	{
-		return getPath('$key.lua', TEXT, library);
-	}
 
 	static public function video(key:String)
 	{
@@ -191,6 +187,11 @@ class Paths
 		if(postfix != null) songKey += '-' + postfix;
 		var inst = returnSound(null, songKey, 'songs');
 		return inst;
+	}
+
+	inline static public function hx(key:String, ?library:String)
+	{
+		return getPath('$key.hx', TEXT, library);
 	}
 
 	public static var currentTrackedAssets:Map<String, FlxGraphic> = [];
@@ -246,7 +247,7 @@ class Paths
 		return newGraphic;
 	}
 
-	static public function getTextFromFile(key:String, ?ignoreMods:Bool = false):String
+	static public function getTextFromFile(key:String):String
 	{
 		#if sys
 
@@ -273,10 +274,10 @@ class Paths
 		return 'assets/fonts/$key';
 	}
 
-	public static function fileExists(key:String, type:AssetType, ?ignoreMods:Bool = false, ?library:String = null)
+	public static function fileExists(key:String, type:AssetType, ?library:String = null)
 	{
 
-		if(OpenFlAssets.exists(getPath(key, type, library, false))) {
+		if(OpenFlAssets.exists(getPath(key, type, library))) {
 			return true;
 		}
 		return false;
@@ -284,17 +285,16 @@ class Paths
 
 	static public function getAtlas(key:String, ?library:String = null, ?allowGPU:Bool = true):FlxAtlasFrames
 	{
-		var useMod = false;
 		var imageLoaded:FlxGraphic = image(key, library, allowGPU);
 
-		var myXml:Dynamic = getPath('images/$key.xml', TEXT, library, true);
+		var myXml:Dynamic = getPath('images/$key.xml', TEXT, library);
 		if(OpenFlAssets.exists(myXml))
 		{
 			return FlxAtlasFrames.fromSparrow(imageLoaded, myXml);
 		}
 		else
 		{
-			var myJson:Dynamic = getPath('images/$key.json', TEXT, library, true);
+			var myJson:Dynamic = getPath('images/$key.json', TEXT, library);
 			if(OpenFlAssets.exists(myJson))
 			{
 				return FlxAtlasFrames.fromTexturePackerJson(imageLoaded, myJson);
@@ -420,6 +420,44 @@ class Paths
 		//trace(spriteJson);
 		//trace(animationJson);
 		spr.loadAtlasEx(folderOrImg, spriteJson, animationJson);
+	}
+
+	inline public static function mergeAllTextsNamed(path:String, defaultDirectory:String = null, allowDuplicates:Bool = false)
+	{
+		if(defaultDirectory == null) defaultDirectory = getSharedPath();
+		defaultDirectory = defaultDirectory.trim();
+		if(!defaultDirectory.endsWith('/')) defaultDirectory += '/';
+		if(!defaultDirectory.startsWith('assets/')) defaultDirectory = 'assets/$defaultDirectory';
+
+		var mergedList:Array<String> = [];
+		var paths:Array<String> = directoriesWithFile(defaultDirectory, path);
+
+		var defaultPath:String = defaultDirectory + path;
+		if(paths.contains(defaultPath))
+		{
+			paths.remove(defaultPath);
+			paths.insert(0, defaultPath);
+		}
+
+		for (file in paths)
+		{
+			var list:Array<String> = CoolUtil.coolTextFile(file);
+			for (value in list)
+				if((allowDuplicates || !mergedList.contains(value)) && value.length > 0)
+					mergedList.push(value);
+		}
+		return mergedList;
+	}
+
+	//dummy lol just use append dumbass
+	inline public static function directoriesWithFile(path:String, fileToFind:String)
+	{
+		var foldersToCheck:Array<String> = [];
+		#if sys
+		if(FileSystem.exists(path + fileToFind))
+		#end
+			foldersToCheck.push(path + fileToFind);
+		return foldersToCheck;
 	}
 
 	/*private static function getContentFromFile(path:String):String

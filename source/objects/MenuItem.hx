@@ -1,39 +1,50 @@
 package objects;
 
+import flixel.FlxSprite;
+import flixel.FlxG;
+import flixel.math.FlxMath;
+import flixel.util.FlxColor;
+
 class MenuItem extends FlxSprite
 {
-	public var targetY:Float = 0;
+    public var targetY:Float = 0;
+    
+    public var isFlashing:Bool = false;
+    private var flashingElapsed:Float = 0;
+    private static inline final FLASH_COLOR:FlxColor = 0xFF33FFFF;
+    private static inline final FLASHES_PER_SECOND:Int = 6;
+    private static inline final LERP_SPEED:Float = 10.2;
+    private static inline final BASE_Y:Float = 480;
+    
+    private var lerpFactor:Float;
 
-	public function new(x:Float, y:Float, weekName:String = '')
-	{
-		super(x, y);
-		loadGraphic(Paths.image('storymenu/' + weekName));
-		antialiasing = ClientPrefs.data.antialiasing;
-		//trace('Test added: ' + WeekData.getWeekNumber(weekNum) + ' (' + weekNum + ')');
-	}
+    public function new(x:Float, y:Float, weekName:String = '')
+    {
+        super(x, y);
+        loadGraphic(Paths.image('storymenu/' + weekName));
+        antialiasing = ClientPrefs.data.antialiasing;
+        lerpFactor = Math.exp(-1 / FlxG.updateFramerate * LERP_SPEED);
+    }
 
-	public var isFlashing(default, set):Bool = false;
-	private var _flashingElapsed:Float = 0;
-	final _flashColor = 0xFF33FFFF;
-	final flashes_ps:Int = 6;
+    public function setFlashing(value:Bool = true):Void
+    {
+        isFlashing = value;
+        flashingElapsed = 0;
+        color = isFlashing ? FLASH_COLOR : FlxColor.WHITE;
+    }
 
-	public function set_isFlashing(value:Bool = true):Bool
-	{
-		isFlashing = value;
-		_flashingElapsed = 0;
-		color = (isFlashing) ? _flashColor : FlxColor.WHITE;
-		return isFlashing;
-	}
+    override function update(elapsed:Float)
+    {
+        super.update(elapsed);
 
-	override function update(elapsed:Float)
-	{
-		super.update(elapsed);
+        // Smooth movement towards target Y position
+        y = FlxMath.lerp((targetY * 120) + BASE_Y, y, lerpFactor);
 
-		y = FlxMath.lerp((targetY * 120) + 480, y, Math.exp(-elapsed * 10.2));
-		if (isFlashing)
-		{
-			_flashingElapsed += elapsed;
-			color = (Math.floor(_flashingElapsed * FlxG.updateFramerate * flashes_ps) % 2 == 0) ? _flashColor : FlxColor.WHITE;
-		}
-	}
+        if (isFlashing)
+        {
+            flashingElapsed += elapsed;
+            var flashFrame = Std.int(flashingElapsed * FlxG.updateFramerate * FLASHES_PER_SECOND);
+            color = ((flashFrame & 1) == 0) ? FLASH_COLOR : FlxColor.WHITE;
+        }
+    }
 }

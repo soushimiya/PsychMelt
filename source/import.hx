@@ -4,12 +4,6 @@
 import backend.Discord;
 #end
 
-//Psych
-#if LUA_ALLOWED
-import llua.*;
-import llua.Lua;
-#end
-
 #if ACHIEVEMENTS_ALLOWED
 import backend.Achievements;
 #end
@@ -31,7 +25,6 @@ import backend.ClientPrefs;
 import backend.Conductor;
 import backend.BaseStage;
 import backend.Difficulty;
-import backend.Mods;
 
 import objects.Alphabet;
 import objects.BGSprite;

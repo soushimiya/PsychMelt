@@ -1,6 +1,6 @@
 @echo off
 color 0a
-cd .
+cd ../..
 @echo on
 echo Installing dependencies.
 haxelib install hmm

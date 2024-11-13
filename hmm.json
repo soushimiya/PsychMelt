@@ -1,0 +1,107 @@
+{
+	"dependencies": [
+		{
+			"name": "lime",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "openfl",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "flixel",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "flixel-addons",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "flixel-tools",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "flixel-ui",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "hxcpp",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "hxCodec",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "hxcpp-debug-server",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "tjson",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "hxdiscord_rpc",
+			"type": "haxelib",
+			"version": null
+		},
+		{
+			"name": "flxanimate",
+			"type": "git",
+			"dir": null,
+			"ref": "dev",
+			"url": "https://github.com/ShadowMario/flxanimate"
+		},
+		{
+			"name": "polymod",
+			"type": "git",
+			"dir": null,
+			"ref": "0fbdf27fe124549730accd540cec8a183f8652c0",
+			"url": "https://github.com/larsiusprime/polymod"
+		},
+		{
+			"name": "jsonpatch",
+			"type": "git",
+			"dir": null,
+			"ref": "f9b83215acd586dc28754b4ae7f69d4c06c3b4d3",
+			"url": "https://github.com/EliteMasterEric/jsonpatch"
+		},
+		{
+			"name": "jsonpath",
+			"type": "git",
+			"dir": null,
+			"ref": "7a24193717b36393458c15c0435bb7c4470ecdda",
+			"url": "https://github.com/EliteMasterEric/jsonpath"
+		},
+		{
+			"name": "thx.core",
+			"type": "git",
+			"dir": null,
+			"ref": "76d87418fadd92eb8e1b61f004cff27d656e53dd",
+			"url": "https://github.com/fponticelli/thx.core"
+		},
+		{
+			"name": "thx.semver",
+			"type": "git",
+			"dir": null,
+			"ref": "bdb191fe7cf745c02a980749906dbf22719e200b",
+			"url": "https://github.com/fponticelli/thx.semver"
+		},
+		{
+			"name": "hscript-improved",
+			"type": "git",
+			"dir": null,
+			"url": "https://github.com/FNF-CNE-Devs/hscript-improved"
+		}
+	]
+}
