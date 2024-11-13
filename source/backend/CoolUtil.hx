@@ -4,6 +4,7 @@ import flixel.FlxBasic;
 import openfl.utils.Assets;
 import lime.utils.Assets as LimeAssets;
 import flixel.math.FlxPoint;
+import modding.PsychMod;
 
 class CoolUtil
 {
@@ -174,5 +175,24 @@ class CoolUtil
 			default:
 				text.borderStyle = NONE;
 		}
+	}
+
+	//FileSystem readDirectory but with mods folder
+	inline public static function readDirectory(path:String):Array<String>
+	{
+		var files:Array<String> = null;
+		if(FileSystem.exists(path)){ files = FileSystem.readDirectory(path); }
+		for (mod in PsychMod.loadedMods){
+			if (FileSystem.exists('mods/$mod/' + path.split("assets/")[1])){
+				if(files == null){ files = []; }
+				var modfile = FileSystem.readDirectory('mods/$mod/' + path.split("assets/")[1]);
+				for (file in modfile){
+					if (!files.contains(file)){
+                        files.push(file);
+                    }
+				}
+			}
+		}
+		return files;
 	}
 }

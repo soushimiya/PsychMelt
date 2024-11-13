@@ -45,7 +45,7 @@ class PsychMod
 			ignoredFiles: Polymod.getDefaultIgnoreList()
 		});
 
-		trace(curMod);
+		trace(loadedMods);
 		Polymod.loadOnlyMods(loadedMods);
 	}
 

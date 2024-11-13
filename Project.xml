@@ -85,7 +85,6 @@
 
 	<!--Modding Things-->
 	<haxelib name="polymod" if="MODDING_ALLOWED"/>
-	<haxelib name="hscript-improved" if="MODDING_ALLOWED"/>
 
 	<haxedef name="CUSTOM_CLASSES" />
 	<haxedef name="hscriptPos" />

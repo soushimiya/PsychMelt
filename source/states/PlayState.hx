@@ -2927,7 +2927,8 @@ class PlayState extends MusicBeatState
 			return;
 		try
 		{
-			script = new PsychHscript(null, OpenFlAssets.getText(path));
+			script = new PsychHscript(OpenFlAssets.getText(path));
+			script.scriptObject = this;
 			hscriptArray.push(script);
 			script.callFunc('create');
 		}
@@ -2947,14 +2948,6 @@ class PlayState extends MusicBeatState
 			script.callFunc(event, args);
 		}
 		#end
-	}
-
-	public function setScript(name:String, thing:Dynamic)
-	{	
-		for (script in hscriptArray)
-		{
-			script.set(name, thing);
-		}
 	}
 
 	override function sectionHit()

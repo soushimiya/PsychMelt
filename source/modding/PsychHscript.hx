@@ -1,7 +1,7 @@
-package scripts;
+package modding;
 
-import hscript.Parser;
-import hscript.Interp;
+import hscriptImproved.Parser;
+import hscriptImproved.Interp;
 
 using StringTools;
 

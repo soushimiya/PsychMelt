@@ -17,7 +17,7 @@ class HscriptState extends MusicBeatState
 			trace('[HscriptState] No State Found! ($path)');
 			return;
 		}
-		script = new PsychHscript(null, path);
+		script = new PsychHscript(Assets.getText(path));
 		trace('[HscriptState] Loaded State! ($path)');
 		script.callFunc('create');
 
