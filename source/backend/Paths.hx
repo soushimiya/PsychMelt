@@ -250,8 +250,7 @@ class Paths
 
 	static public function getTextFromFile(key:String):String
 	{
-		if(OpenFlAssets.exists(key, TEXT)) return OpenFlAssets.getText(key);
-		return null;
+		return OpenFlAssets.getText("assets/" + key);
 	}
 
 	inline static public function font(key:String)
