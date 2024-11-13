@@ -59,12 +59,10 @@
 	<define name="CRASH_HANDLER" if="desktop release" />
 
 	<!-- Assets -->
-	<assets path="assets/fonts" rename="assets/fonts"/>
-	<assets path="assets/shared"        exclude="*.ogg" if="web"/>
-	<assets path="assets/shared"        exclude="*.mp3" unless="web"/>
-	<assets path="assets/videos"        library="videos"        if="VIDEOS_ALLOWED"/>
-	<assets path="assets/songs"         library="songs"         exclude="*.ogg" if="web"/>
-	<assets path="assets/songs"         library="songs"         exclude="*.mp3" unless="web"/>
+	<assets path="assets"/>
+	<assets path="assets/videos"        library="videos"/>
+	<assets path="assets/songs"         library="songs"/>
+	<assets path="assets/songs"         library="songs"/>
 
 	<library name="videos"        preload="true" if="VIDEOS_ALLOWED"/>
 	<library name="songs"         preload="true" />
@@ -89,7 +87,6 @@
 	<haxedef name="CUSTOM_CLASSES" />
 	<haxedef name="hscriptPos" />
 
-	<haxedef name="POLYMOD_DEBUG" value="true"/>
 	<haxedef name="POLYMOD_MOD_METADATA_FILE" value="meta.json" />
 
 	<!-- Disable Discord IO Thread -->

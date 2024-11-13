@@ -1203,7 +1203,7 @@ class CharacterEditorState extends MusicBeatState
 		characterList = Paths.mergeAllTextsNamed('data/characterList.txt', Paths.getSharedPath());
 		var foldersToCheck:Array<String> = Paths.directoriesWithFile(Paths.getSharedPath(), 'characters/');
 		for (folder in foldersToCheck)
-			for (file in FileSystem.readDirectory(folder))
+			for (file in CoolUtil.readDirectory(folder))
 				if(file.toLowerCase().endsWith('.json'))
 				{
 					var charToCheck:String = file.substr(0, file.length - 5);

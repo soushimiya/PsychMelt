@@ -23,8 +23,8 @@ class PsychMod
 		{
 			trace('Mods Folder Missing. Creating $MOD_DIR folder...');
 			FileSystem.createDirectory(MOD_DIR);
-			return;
 		}
+		loadedMods = FileSystem.readDirectory("mods/");
 		trace("Initializing PsychMod...");
 		
 		Polymod.init({
@@ -37,7 +37,7 @@ class PsychMod
 				assetLibraryPaths: [
 					"default" => "./",
 					"songs" => "./songs",
-					"shared" => "./shared",
+					"shared" => "../",
 					"videos" => "./videos"
 				]
 			},

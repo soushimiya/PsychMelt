@@ -537,7 +537,7 @@ class PlayState extends MusicBeatState
 		}
 
 		//Song Scripts
-		for (file in FileSystem.readDirectory(Paths.getSharedPath('data/$songName/'))) {
+		for (file in CoolUtil.readDirectory(Paths.getSharedPath('data/$songName/'))) {
 			loadScript('data/$songName/' + file);
 		}
 

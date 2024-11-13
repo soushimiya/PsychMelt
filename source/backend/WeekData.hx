@@ -112,10 +112,10 @@ class WeekData {
 					}
 				}
 
-				for (file in FileSystem.readDirectory(directory))
+				for (file in CoolUtil.readDirectory(directory))
 				{
 					var path = haxe.io.Path.join([directory, file]);
-					if (!FileSystem.isDirectory(path) && file.endsWith('.json'))
+					if (file.endsWith('.json'))
 					{
 						addWeek(file.substr(0, file.length - 5), path, directories[i], i, originalLength);
 					}
