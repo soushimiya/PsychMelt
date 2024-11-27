@@ -367,7 +367,9 @@ class PlayState extends MusicBeatState
 			case 'stage': new states.stages.StageWeek1(); //Basegame Stage cuz yes null check?? uh idk
 			default:
 				//Scripted Stages
-				loadScript('stages/$curStage.hx');
+				if (Paths.fileExists('stages/$curStage.hx', TEXT)){
+					loadScript('stages/$curStage.hx');
+				}
 		}
 		callScript("stageCreated");
 

@@ -250,7 +250,10 @@ class Paths
 
 	static public function getTextFromFile(key:String):String
 	{
-		return OpenFlAssets.getText("assets/" + key);
+		if(fileExists(key)) {
+			return OpenFlAssets.getText("assets/" + key);
+		}
+		return null;
 	}
 
 	inline static public function font(key:String)
@@ -258,10 +261,9 @@ class Paths
 		return 'assets/fonts/$key';
 	}
 
-	public static function fileExists(key:String, type:AssetType, ?library:String = null)
+	public static function fileExists(key:String, ?type:AssetType, ?library:String = null)
 	{
-
-		if(OpenFlAssets.exists(getPath(key, type, library))) {
+		if(OpenFlAssets.exists(getPath("assets/" + key))) {
 			return true;
 		}
 		return false;
